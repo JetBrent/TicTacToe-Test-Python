@@ -5,9 +5,8 @@ def clear_console():
     if os.name == 'nt':
         _ = os.system('cls')
 
-board = [['1','2','3'],['4','5','6'],['7','8','9']]
 
-def ChangeBoard(answer, playermove):
+def ChangeBoard(board, answer, playermove):
             if answer == '1' and board[0][0] == '1':
                 board[0][0] = playermove
                 return True
@@ -39,12 +38,14 @@ def ChangeBoard(answer, playermove):
                 print("Answer not found in board. Please input a valid answer!")
                 return False
 
-def PrintBoard():
-    print(board[0])
-    print(board[1])
-    print(board[2])
+def PrintBoard(board):
+    print("{0} | {1} | {2}".format(board[0][0], board[0][1], board[0][2]))
+    print("----------")
+    print("{0} | {1} | {2}".format(board[1][0], board[1][1], board[1][2]))
+    print("----------")
+    print("{0} | {1} | {2}".format(board[2][0], board[2][1], board[2][2]))
 
-def CheckWinCondition():
+def CheckWinCondition(board):
     if board[0][0] == board[1][0] and board[1][0] == board[2][0]: #First Column Checking
         return 1
     elif board[0][1] == board[1][1] and board[1][1] == board[2][1]: #Second Column Checking
@@ -70,29 +71,61 @@ def Playersign(player):
     else:
         return 'O'
 
-def main():
+def maingame(board, player):
+    resetgame = 0
     wincondition = 0
+    while(resetgame == 0):            
+            while wincondition == 0:
+                breakcondition = 0
+                if player == '1':
+                    player = '2'
+                else:
+                    player = '1'
+                playermove = Playersign(player)
+                inputcorrect = False
+                while(inputcorrect == False):
+                    PrintBoard(board)
+                    print("It is  Player " + player  + "'s turn. Please type your move now.")
+                    useranswer = input()
+                    if useranswer.lower() == 'q':
+                        breakcondition = 1
+                        wincondition = 1
+                        break
+                    else:
+                        clear_console()
+                        inputcorrect = ChangeBoard(board, useranswer, playermove)
+                        wincondition = CheckWinCondition(board)
+            if breakcondition == 1:
+                resetgame = 1
+                break
+            else:
+                PrintBoard(board)
+                print("\nPlayer " + player + " has won the game!")
+                resetgame = 1
+
+def resetboard():
+    return [['1','2','3'],['4','5','6'],['7','8','9']]
+
+def main():
+    board = [['1','2','3'],['4','5','6'],['7','8','9']]
     player = 2
-    while wincondition == 0:
+    endgame = 0
+    while(endgame == 0):
+        maingame(board, player)
         if player == '1':
             player = '2'
         else:
             player = '1'
-        playermove = Playersign(player)
-        inputcorrect = False
-        while(inputcorrect == False):
-            PrintBoard()
-            print("It is  Player " + player  + "'s turn. Please type your move now.")
-            try:
-                useranswer = input()
-            except:
-                print("Unexpected error has occured. Please restart the game.")
-                continue
+        print("\nDo you want to quit? Press 'Q' to quit. Press any key to play a new game.")
+        userquit = input()
+        if userquit.lower() == "q":
+            endgame = 1
+            break
+        else:
             clear_console()
-            inputcorrect = ChangeBoard(useranswer, playermove)
-        wincondition = CheckWinCondition()
-    PrintBoard()
-    print("Player " + player + " has won the game!")
+            board = resetboard()
+            continue
+    print("Exiting the game... ")
     input()
 
 if __name__ == '__main__':
