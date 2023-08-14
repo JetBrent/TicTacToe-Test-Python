@@ -1,5 +1,7 @@
 import os
 
+# This is a console tic tac toe game made using Python.
+
 def clear_console():
     # Clear console screen for Windows
     if os.name == 'nt':
